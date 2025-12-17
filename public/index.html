@@ -2,116 +2,442 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Générateur de clé Roblox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitanX - Key Generator</title>
   <style>
-    /* Fond dégradé animé */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(-45deg, #0f0f0f, #1a1a40, #222, #0f0f0f);
-      background-size: 400% 400%;
-      animation: gradientBG 12s ease infinite;
-      color: #f0f0f0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0118;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Subtle animated gradient background */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at top, #1a0b2e 0%, transparent 50%),
+                  radial-gradient(ellipse at bottom, #16213e 0%, transparent 50%);
+      opacity: 0.6;
+    }
+
+    /* Elegant floating orbs */
+    body::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 15% 25%, rgba(99, 102, 241, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 85% 75%, rgba(139, 92, 246, 0.12) 0%, transparent 25%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 30%);
+      animation: orbFloat 25s ease-in-out infinite;
+      filter: blur(80px);
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(40px, -40px); }
+      66% { transform: translate(-30px, 40px); }
+    }
+
+    /* Minimal grid */
+    .grid-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 480px;
+      padding: 50px 40px;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(40px) saturate(150%);
+      border-radius: 24px;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(99, 102, 241, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 3em;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 30px rgba(99, 102, 241, 0.3));
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9em;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    button {
+      flex: 1;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+      color: #e0e7ff;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.25));
+      border-color: rgba(99, 102, 241, 0.5);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:nth-child(2) {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.15));
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    button:nth-child(2):hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(168, 85, 247, 0.25));
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+    }
+
+    #output {
+      background: rgba(17, 24, 39, 0.5);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      min-height: 150px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-
-    h1 {
-      margin-bottom: 20px;
-      font-size: 2.2em;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-
-    /* Boutons néon */
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      background: #111;
-      color: #00ffcc;
-      border: 2px solid #00ffcc;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 8px;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      font-weight: bold;
-      box-shadow: 0 0 10px #00ffcc;
-    }
-    button:hover {
-      background: #00ffcc;
-      color: #111;
-      box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
-    }
-
-    /* Carte d'affichage */
-    #output {
-      margin-top: 30px;
-      font-size: 18px;
-      background: rgba(20, 20, 20, 0.85);
-      padding: 20px;
-      border-radius: 12px;
-      width: 420px;
-      word-break: break-word;
       text-align: center;
-      border: 1px solid #00ffcc;
-      box-shadow: 0 0 15px #00ffcc;
-      white-space: pre-line; /* permet les sauts de ligne */
+      position: relative;
+      backdrop-filter: blur(20px);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #output::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+    }
+
+    .output-icon {
+      font-size: 2.5em;
+      margin-bottom: 16px;
+      animation: iconFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .output-text {
+      font-size: 1em;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+    }
+
+    .key-display {
+      font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+      font-size: 1.3em;
+      color: #c7d2fe;
+      font-weight: 700;
+      margin: 16px 0;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      border-radius: 10px;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      letter-spacing: 2px;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+    }
+
+    .expire-time {
+      font-size: 0.85em;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(99, 102, 241, 0.15);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #6366f1;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      animation: particleFloat 3s ease-out;
+      box-shadow: 0 0 8px #6366f1;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-120px) scale(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 40px 30px;
+      }
+      
+      h1 {
+        font-size: 2.5em;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🔑 Générateur de clé Roblox</h1>
-  <button onclick="generateKey()">Générer une clé</button>
-  <button onclick="copyKey()">Copier la clé</button>
-  <div id="output">Clique sur le bouton pour générer une clé.</div>
+  <div class="grid-overlay"></div>
+  
+  <div class="container">
+    <div class="logo">
+      <h1>GitanX</h1>
+      <div class="subtitle">Executor</div>
+    </div>
+
+    <div class="button-group">
+      <button onclick="generateKey()">
+        🔑 Générer
+      </button>
+      <button onclick="copyKey()">
+        📋 Copier
+      </button>
+    </div>
+
+    <div id="output">
+      <div class="output-icon">🔐</div>
+      <div class="output-text">Clique sur Générer pour obtenir ta clé</div>
+    </div>
+  </div>
 
   <script>
     let currentKey = "";
 
     async function generateKey() {
       const output = document.getElementById("output");
-      output.textContent = "✨ Génération en cours...";
+      output.innerHTML = '<div class="loading"></div><div class="output-text" style="margin-top: 20px;">Génération en cours...</div>';
+      
+      createParticles();
+      
       try {
-        const res = await fetch("/generate"); // appelle ton backend Render
-
-        // Si le backend renvoie une erreur (cooldown)
+        const res = await fetch("/generate");
+        
         if (!res.ok) {
           const data = await res.json();
           if (currentKey) {
-            output.textContent = `⏳ pls wait 5 min\nDernière clé générée : ${currentKey}`;
+            output.innerHTML = `
+              <div class="output-icon">⏳</div>
+              <div class="output-text">Veuillez patienter 5 minutes</div>
+              <div class="key-display">${currentKey}</div>
+              <div class="expire-time">Dernière clé générée</div>
+            `;
           } else {
-            output.textContent = "⏳ pls wait 5 min\n(Aucune clé générée auparavant)";
+            output.innerHTML = `
+              <div class="output-icon">⏳</div>
+              <div class="output-text">Veuillez patienter 5 minutes<br>(Aucune clé générée auparavant)</div>
+            `;
           }
           return;
         }
-
+        
         const data = await res.json();
         currentKey = data.key;
-        output.textContent = `✅ Clé : ${data.key}\n⏰ Expire dans 12h`;
+        
+        output.innerHTML = `
+          <div class="output-icon">✅</div>
+          <div class="output-text">Clé générée avec succès</div>
+          <div class="key-display">${data.key}</div>
+          <div class="expire-time">⏰ Expire dans 12 heures</div>
+        `;
+        
+        createParticles();
       } catch (err) {
-        output.textContent = "❌ Erreur lors de la génération.";
+        output.innerHTML = `
+          <div class="output-icon">❌</div>
+          <div class="output-text">Erreur lors de la génération<br>Veuillez réessayer</div>
+        `;
         console.error(err);
       }
     }
 
     function copyKey() {
       if (!currentKey) {
-        alert("Aucune clé générée !");
+        showNotification("⚠️ Aucune clé générée !");
         return;
       }
+      
       navigator.clipboard.writeText(currentKey).then(() => {
-        alert("Clé copiée dans le presse-papier !");
+        showNotification("✅ Clé copiée !");
+        createParticles();
       });
     }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(139, 92, 246, 0.95));
+        color: #fff;
+        padding: 16px 28px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease-out;
+        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+      }, 2500);
+    }
+
+    function createParticles() {
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.top = Math.random() * 100 + '%';
+          particle.style.animationDelay = Math.random() * 0.3 + 's';
+          document.body.appendChild(particle);
+          
+          setTimeout(() => particle.remove(), 3000);
+        }, i * 30);
+      }
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
