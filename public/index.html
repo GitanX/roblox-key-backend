@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Key System</title>
+</head>
+<body>
+  <h1>Key Generator</h1>
+  <button onclick="generateKey()">Generate Key</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function generateKey() {
+      const res = await fetch("/.netlify/functions/generate");
+      const data = await res.json();
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
