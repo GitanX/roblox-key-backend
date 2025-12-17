@@ -5,15 +5,32 @@ import { randomUUID } from "crypto";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // autorise les appels depuis n'importe quelle origine
-app.use(express.static("public")); // sert ton HTML/CSS/JS
+app.use(cors());
 
 const keys = {};
+const cooldowns = {}; // { ip: timestamp }
 
 app.get("/generate", (req, res) => {
+  const ip = req.ip; // identifiant utilisateur
+  const now = Date.now();
+
+  // Vérifie si l’utilisateur est en cooldown
+  if (cooldowns[ip] && now - cooldowns[ip] < 5 * 60 * 1000) {
+    const remaining = Math.ceil((5 * 60 * 1000 - (now - cooldowns[ip])) / 1000);
+    return res.status(429).json({
+      error: "Cooldown actif",
+      wait: remaining
+    });
+  }
+
+  // Génère une nouvelle clé
   const key = randomUUID();
-  const expiresAt = Date.now() + 12 * 60 * 60 * 1000; // 12h
+  const expiresAt = now + 12 * 60 * 60 * 1000;
   keys[key] = { expiresAt };
+
+  // Met à jour le cooldown
+  cooldowns[ip] = now;
+
   res.json({ key, expiresAt });
 });
 
