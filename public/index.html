@@ -53,6 +53,14 @@
       output.textContent = "Génération en cours...";
       try {
         const res = await fetch("/generate"); // appelle ton backend Render
+
+        // Si le backend renvoie une erreur (cooldown)
+        if (!res.ok) {
+          const data = await res.json();
+          output.textContent = "⏳ pls wait 5 min";
+          return;
+        }
+
         const data = await res.json();
         currentKey = data.key;
         output.textContent = `Clé : ${data.key}\nExpire dans 12h`;
