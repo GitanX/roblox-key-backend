@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Générateur de clé Roblox</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 { margin-bottom: 20px; }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #666; }
+    #output {
+      margin-top: 30px;
+      font-size: 18px;
+      background: #222;
+      padding: 15px;
+      border-radius: 5px;
+      width: 400px;
+      word-break: break-word;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Générateur de clé Roblox</h1>
+  <button onclick="generateKey()">Générer une clé</button>
+  <button onclick="copyKey()">Copier la clé</button>
+  <div id="output">Clique sur le bouton pour générer une clé.</div>
+
+  <script>
+    let currentKey = "";
+
+    async function generateKey() {
+      const output = document.getElementById("output");
+      output.textContent = "Génération en cours...";
+      try {
+        const res = await fetch("/generate"); // appelle ton backend Render
+        const data = await res.json();
+        currentKey = data.key;
+        output.textContent = `Clé : ${data.key}\nExpire dans 12h`;
+      } catch (err) {
+        output.textContent = "Erreur lors de la génération.";
+        console.error(err);
+      }
+    }
+
+    function copyKey() {
+      if (!currentKey) {
+        alert("Aucune clé générée !");
+        return;
+      }
+      navigator.clipboard.writeText(currentKey).then(() => {
+        alert("Clé copiée dans le presse-papier !");
+      });
+    }
+  </script>
+</body>
+</html>
