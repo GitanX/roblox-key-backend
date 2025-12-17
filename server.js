@@ -6,7 +6,7 @@ import path from "path";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// IMPORTANT : Configure Express pour récupérer la vraie IP
+// IMPORTANT : Configure Express pour récupérer la vraie I
 app.set('trust proxy', true);
 
 app.use(cors());
