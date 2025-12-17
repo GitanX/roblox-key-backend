@@ -1,21 +1,15 @@
-import fetch from "node-fetch";
-
 export async function handler(event, context) {
   try {
-    const params = new URLSearchParams(event.queryStringParameters);
-    const key = params.get("key");
+    const params = event.queryStringParameters;
+    const key = params.key;
+
     if (!key) return { statusCode: 400, body: JSON.stringify({ valid: false }) };
 
-    const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/${key}`, {
-      headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` },
-    });
+    globalThis.keys = globalThis.keys || {};
+    const data = globalThis.keys[key];
+    if (!data) return { statusCode: 400, body: JSON.stringify({ valid: false }) };
 
-    if (!res.ok) return { statusCode: 400, body: JSON.stringify({ valid: false }) };
-
-    const data = await res.json();
-    const { expiresAt } = JSON.parse(data.result);
-
-    if (Date.now() > expiresAt) {
+    if (Date.now() > data.expiresAt) {
       return { statusCode: 400, body: JSON.stringify({ valid: false }) };
     }
 
