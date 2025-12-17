@@ -1,20 +1,25 @@
 import express from "express";
 import cors from "cors";
 import { randomUUID } from "crypto";
+import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.static("public")); // sert ton dossier public
 
 const keys = {};
 const cooldowns = {}; // { ip: timestamp }
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
+});
+
 app.get("/generate", (req, res) => {
-  const ip = req.ip; // identifiant utilisateur
+  const ip = req.ip;
   const now = Date.now();
 
-  // Vérifie si l’utilisateur est en cooldown
   if (cooldowns[ip] && now - cooldowns[ip] < 5 * 60 * 1000) {
     const remaining = Math.ceil((5 * 60 * 1000 - (now - cooldowns[ip])) / 1000);
     return res.status(429).json({
@@ -23,12 +28,9 @@ app.get("/generate", (req, res) => {
     });
   }
 
-  // Génère une nouvelle clé
   const key = randomUUID();
   const expiresAt = now + 12 * 60 * 60 * 1000;
   keys[key] = { expiresAt };
-
-  // Met à jour le cooldown
   cooldowns[ip] = now;
 
   res.json({ key, expiresAt });
