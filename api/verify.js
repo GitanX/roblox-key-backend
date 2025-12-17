@@ -1,25 +1,21 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export default async function handler(req, res) {
-  const { key, hwid } = req.body;
+  const { key, hwid } = req.query;
+  if (!key || !hwid) return res.status(400).json({ valid: false });
 
-  const data = await kv.get(key);
-  if (!data) {
-    return res.json({ status: "invalid" });
-  }
+  const data = await redis.get(key);
+  if (!data) return res.status(400).json({ valid: false });
 
-  if (Date.now() > data.expires) {
-    return res.json({ status: "expired" });
-  }
+  const { hwid: storedHwid, expiresAt } = JSON.parse(data);
 
-  if (data.hwid && data.hwid !== hwid) {
-    return res.json({ status: "hwid_mismatch" });
-  }
+  if (storedHwid !== hwid) return res.status(400).json({ valid: false });
+  if (Date.now() > expiresAt) return res.status(400).json({ valid: false });
 
-  if (!data.hwid) {
-    data.hwid = hwid;
-    await kv.set(key, data);
-  }
-
-  res.json({ status: "valid" });
+  res.status(200).json({ valid: true });
 }
