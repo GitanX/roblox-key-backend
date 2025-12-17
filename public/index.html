@@ -57,7 +57,11 @@
         // Si le backend renvoie une erreur (cooldown)
         if (!res.ok) {
           const data = await res.json();
-          output.textContent = "⏳ pls wait 5 min";
+          if (currentKey) {
+            output.textContent = `⏳ pls wait 5 min\nDernière clé générée : ${currentKey}`;
+          } else {
+            output.textContent = "⏳ pls wait 5 min\n(Aucune clé générée auparavant)";
+          }
           return;
         }
 
