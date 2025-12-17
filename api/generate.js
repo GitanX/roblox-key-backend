@@ -1,17 +1,19 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
+import { randomUUID } from "crypto";
 
-function randomKey() {
-  return Math.random().toString(36).substring(2, 10).toUpperCase();
-}
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export default async function handler(req, res) {
-  const key = "KEY-" + randomKey();
-  const expires = Date.now() + 12 * 60 * 60 * 1000; // 12 heures
+  const { hwid } = req.query;
+  if (!hwid) return res.status(400).json({ error: "HWID required" });
 
-  await kv.set(key, {
-    expires,
-    hwid: null,
-  });
+  const key = randomUUID();
+  const expiresAt = Date.now() + 12 * 60 * 60 * 1000; // 12h
 
-  res.json({ key, expires });
+  await redis.set(key, JSON.stringify({ hwid, expiresAt }));
+
+  res.status(200).json({ key, expiresAt });
 }
