@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <title>Générateur de clé Roblox</title>
   <style>
+    /* Fond dégradé animé */
     body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #0f0f0f, #1a1a40, #222, #0f0f0f);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
       color: #f0f0f0;
       display: flex;
       flex-direction: column;
@@ -15,32 +18,58 @@
       height: 100vh;
       margin: 0;
     }
-    h1 { margin-bottom: 20px; }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #444;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
-    button:hover { background: #666; }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2.2em;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+
+    /* Boutons néon */
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background: #111;
+      color: #00ffcc;
+      border: 2px solid #00ffcc;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 8px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      font-weight: bold;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+    button:hover {
+      background: #00ffcc;
+      color: #111;
+      box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
+    }
+
+    /* Carte d'affichage */
     #output {
       margin-top: 30px;
       font-size: 18px;
-      background: #222;
-      padding: 15px;
-      border-radius: 5px;
-      width: 400px;
+      background: rgba(20, 20, 20, 0.85);
+      padding: 20px;
+      border-radius: 12px;
+      width: 420px;
       word-break: break-word;
       text-align: center;
+      border: 1px solid #00ffcc;
+      box-shadow: 0 0 15px #00ffcc;
+      white-space: pre-line; /* permet les sauts de ligne */
     }
   </style>
 </head>
 <body>
-  <h1>🎯 Générateur de clé Roblox</h1>
+  <h1>🔑 Générateur de clé Roblox</h1>
   <button onclick="generateKey()">Générer une clé</button>
   <button onclick="copyKey()">Copier la clé</button>
   <div id="output">Clique sur le bouton pour générer une clé.</div>
@@ -50,7 +79,7 @@
 
     async function generateKey() {
       const output = document.getElementById("output");
-      output.textContent = "Génération en cours...";
+      output.textContent = "✨ Génération en cours...";
       try {
         const res = await fetch("/generate"); // appelle ton backend Render
 
@@ -67,9 +96,9 @@
 
         const data = await res.json();
         currentKey = data.key;
-        output.textContent = `Clé : ${data.key}\nExpire dans 12h`;
+        output.textContent = `✅ Clé : ${data.key}\n⏰ Expire dans 12h`;
       } catch (err) {
-        output.textContent = "Erreur lors de la génération.";
+        output.textContent = "❌ Erreur lors de la génération.";
         console.error(err);
       }
     }
