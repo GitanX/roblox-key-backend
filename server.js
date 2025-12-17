@@ -1,17 +1,18 @@
 import express from "express";
-import cors from "cors";   // <-- ajoute cors
+import cors from "cors";
 import { randomUUID } from "crypto";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); // <-- autorise toutes les origines (GitHub Pages inclus)
+app.use(cors()); // autorise les appels depuis n'importe quelle origine
+app.use(express.static("public")); // sert ton HTML/CSS/JS
 
 const keys = {};
 
 app.get("/generate", (req, res) => {
   const key = randomUUID();
-  const expiresAt = Date.now() + 12 * 60 * 60 * 1000;
+  const expiresAt = Date.now() + 12 * 60 * 60 * 1000; // 12h
   keys[key] = { expiresAt };
   res.json({ key, expiresAt });
 });
